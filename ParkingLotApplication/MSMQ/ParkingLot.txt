@@ -1,0 +1,6 @@
+﻿User Registration with adi@gmail.comis Sucssesfull
+Vehicle Parked Sucssesfully...Which vehicle number isUP605524 in Parking Slot 5
+Vehicle Un-Parked Sucssesfully  from slot Number 5
+Vehicle Un-Parked Sucssesfully  from slot Number 4
+Vehicle Parked Sucssesfully...Which vehicle number is MP013456 in Parking Slot 1
+Vehicle Un-Parked Sucssesfully  from slot Number 1

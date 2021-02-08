@@ -38,7 +38,7 @@ namespace ParkingLotRepositoryLayer.ParkingRepository
             var parkingResult = this.applicationDbContext.ParkingDetails.Where<ParkingDetails>(details => details.ParkingSlotNumber == slotNumber
                                 && details.IsEmpty == false).FirstOrDefault();
             var result = CalculateCharge(parkingResult.ParkingID);
-            
+
             var exitTime = DateTime.Now;
             parkingResult.ExitTime = exitTime;
             parkingResult.IsEmpty = true;

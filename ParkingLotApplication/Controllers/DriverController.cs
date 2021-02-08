@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using ParkingLotApplication.MSMQ;
 using ParkingLotManagerLayer.IParkingLotManager;
 using ParkingLotModelLayer;
 using System;
@@ -17,6 +18,7 @@ namespace ParkingLotApplication.Controllers
     public class DriverController : ControllerBase
     {
         private readonly IParkingManager parkingManager;
+        private readonly MSMQService mSMQService = new MSMQService();
         public DriverController(IParkingManager parkingManager)
         {
             this.parkingManager = parkingManager;
@@ -30,6 +32,7 @@ namespace ParkingLotApplication.Controllers
                 var result = await parkingManager.Parking(parkingDetails);
                 if (result == 1 && parkingDetails.DriverType==2)
                 {
+                    this.mSMQService.AddToQueue("Vehicle Parked Sucssesfully...Which vehicle number is " + parkingDetails.VehicleNumber + " in Parking Slot " + parkingDetails.ParkingSlotNumber);
                     return this.Ok(new { Status = true, Message = "Vehicle Parked Sucssesfully", Data = parkingDetails });
                 }
                 return this.BadRequest(new { Status = true, Message = "Vehicle Parking Un-Sucssesfull...Check Driver type is correct" });
@@ -48,6 +51,7 @@ namespace ParkingLotApplication.Controllers
                 var result = parkingManager.UnParking(slotNumber);
                 if (result != null)
                 {
+                    this.mSMQService.AddToQueue("Vehicle Un-Parked Sucssesfully  from slot Number " + slotNumber);
                     return this.Ok(new { Status = true, Message = "Vehicle Un-Parked Sucssesfully", Data = result });
                 }
                 return this.BadRequest(new { Status = true, Message = "Vehicle Un-Parking was Un-Sucssesfull!!" });

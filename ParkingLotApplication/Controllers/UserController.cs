@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using ParkingLotApplication.MSMQ;
+using ParkingLotApplication.NLog;
 using ParkingLotManagerLayer.IParkingLotManager;
 using ParkingLotModelLayer;
 using System;
@@ -18,8 +20,10 @@ namespace ParkingLotApplication.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly NLogImplement nLog = new NLogImplement();
         private readonly IUserManager userManager;
         private readonly IConfiguration configuration;
+        private readonly MSMQService mSMQService = new MSMQService();
 
         public UserController(IUserManager userManager, IConfiguration configuration)
         {
@@ -37,6 +41,9 @@ namespace ParkingLotApplication.Controllers
                 var result = await this.userManager.RegisterUser(userDetails);
                 if (result == 1)
                 {
+                    nLog.LogDebug("Debug Successfull : Register()");
+                    nLog.LogInfo("Registration Sucssesfull, Result" + result);
+                    this.mSMQService.AddToQueue("User Registration with " + userDetails.EmailID + "is Sucssesfull");
                     return this.Ok(new { Status = true, Message = "User Registration Sucssesfull", Data = userDetails });
                 }
                 return this.BadRequest(new { Status = false, Message = "User Registration Un-Sucssesfull" });
