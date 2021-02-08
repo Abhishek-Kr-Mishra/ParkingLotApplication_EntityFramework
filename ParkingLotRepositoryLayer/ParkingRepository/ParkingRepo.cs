@@ -41,6 +41,7 @@ namespace ParkingLotRepositoryLayer.ParkingRepository
 
             var exitTime = DateTime.Now;
             parkingResult.ExitTime = exitTime;
+            parkingResult.Charges = result.DriverCharges + result.ParkingCharges + result.DriverCharges;
             parkingResult.IsEmpty = true;
             this.applicationDbContext.ParkingDetails.Update(parkingResult);
             this.applicationDbContext.SaveChangesAsync();
@@ -71,7 +72,7 @@ namespace ParkingLotRepositoryLayer.ParkingRepository
             var result = this.applicationDbContext.ParkingDetails.Where<ParkingDetails>(details => details.IsEmpty == false).ToList<ParkingDetails>();
             return result;
         }
-        public object CalculateCharge(int parkingID)
+        public ParkingResponse CalculateCharge(int parkingID)
         {
             var result = from parkingDetails in applicationDbContext.ParkingDetails
                          join parkingTypeDetails in applicationDbContext.ParkingTypeDetails
